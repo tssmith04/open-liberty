@@ -37,6 +37,8 @@ public class WCCustomProperties {
 
     public static Properties customProps = WebContainer.getWebContainerProperties();
 
+    private static boolean IS_SERVLET_61_OR_HIGHER = com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() >= com.ibm.ws.webcontainer.osgi.WebContainer.SPEC_LEVEL_61;
+
     public static String DO_NOT_SERVE_BY_CLASSNAME;
     public static boolean SUPPRESS_WSEP_HEADER;
     public static boolean REDIRECT_CONTEXT_ROOT;
@@ -338,6 +340,9 @@ public class WCCustomProperties {
     //23.0.0.9 This is an old property which was not exposed in this class; moving it here
     public static boolean SET_400_SC_ON_TOO_MANY_PARENT_DIRS; 
 
+    //24.0.0.8 -- jakarta.servlet.http.Part#write( filename ) -- treat filename as abolsute (when specified)
+    public static boolean WRITE_PART_FILENAME_AS_ABSOLUTE; // PH62271
+
     static {
         setCustomPropertyVariables(); //initializes all the variables
     }
@@ -436,6 +441,7 @@ public class WCCustomProperties {
         WCCustomProperties.FullyQualifiedPropertiesMap.put("maxfilecount", "com.ibm.ws.webcontainer.maxfilecount");
         WCCustomProperties.FullyQualifiedPropertiesMap.put("donotcloseoutputonforwardforservleterror", "com.ibm.ws.webcontainer.donotcloseoutputonforwardforservleterror");
         WCCustomProperties.FullyQualifiedPropertiesMap.put("set400scontoomanyparentdirs", "com.ibm.ws.webcontainer.set400scontoomanyparentdirs");
+        WCCustomProperties.FullyQualifiedPropertiesMap.put("writepartfilenameasabsolute", "com.ibm.ws.webcontainer.writepartfilenameasabsolute");
     }
 
     //some properties require "com.ibm.ws.webcontainer." on the front
@@ -834,8 +840,13 @@ public class WCCustomProperties {
         //23.0.0.9
         SET_400_SC_ON_TOO_MANY_PARENT_DIRS = (Boolean.valueOf(customProps.getProperty("com.ibm.ws.webcontainer.set400scontoomanyparentdirs"))).booleanValue();
 
+        //24.0.0.8
+        WRITE_PART_FILENAME_AS_ABSOLUTE = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.writepartfilenameasabsolute", IS_SERVLET_61_OR_HIGHER ? "true" :"false")).booleanValue();
+        
+        System.out.println("Prop: WRITE_PART_FILENAME_AS_ABSOLUTE " + WRITE_PART_FILENAME_AS_ABSOLUTE);
         //Default for Servlet 5.0 +
         if(com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() >= com.ibm.ws.webcontainer.osgi.WebContainer.SPEC_LEVEL_50) {
+
             if(com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() >= com.ibm.ws.webcontainer.osgi.WebContainer.SPEC_LEVEL_60) {
                 // If Servlet 6.0 or later don't allow DISABLE_X_POWERED_BY to be configured. It will always be disabled regardless of what anyone configures in
                 // the server.xml.
@@ -843,6 +854,7 @@ public class WCCustomProperties {
             } else {
                 DISABLE_X_POWERED_BY = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.disablexpoweredby","true")).booleanValue();
             }
+
             STOP_APP_STARTUP_ON_LISTENER_EXCEPTION = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.stopappstartuponlistenerexception" , "true")).booleanValue();
             DECODE_URL_PLUS_SIGN = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.decodeurlplussign", "false")).booleanValue(); 
             ALLOW_QUERY_PARAM_WITH_NO_EQUAL = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.allowqueryparamwithnoequal", "true")).booleanValue();
@@ -865,7 +877,7 @@ public class WCCustomProperties {
             DEFER_SERVLET_REQUEST_LISTENER_DESTROY_ON_ERROR =  Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.deferservletrequestlistenerdestroyonerror", "false")).booleanValue(); //PI26908
 
         }
-        
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, methodName, "DISABLE_X_POWERED_BY [" + DISABLE_X_POWERED_BY + "], " +
                                      "STOP_APP_STARTUP_ON_LISTENER_EXCEPTION ["+ STOP_APP_STARTUP_ON_LISTENER_EXCEPTION + "], " +

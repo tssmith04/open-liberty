@@ -366,6 +366,11 @@
             name="%donotCloseOutputOnForwardForServletError.name"
             description="%donotCloseOutputOnForwardForServletError.desc"
             required="false" type="Boolean" />
+        
+        <AD id="writePartFileNameAsAbsolute"
+            name="%writePartFileNameAsAbsolute.name"
+            description="%writePartFileNameAsAbsolute.desc"
+            required="false" type="Boolean" />
 
         <AD name="internal" description="internal use only"
             id="extensionFactory" required="true" type="String" cardinality="100"
@@ -389,4 +394,3 @@
     </Designate>
     
 </metatype:MetaData>
-
