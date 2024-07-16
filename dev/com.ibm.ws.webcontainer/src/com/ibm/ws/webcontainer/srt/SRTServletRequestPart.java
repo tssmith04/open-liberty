@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2022 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -254,7 +254,7 @@ public class SRTServletRequestPart implements Part {
 					public Object run() throws Exception {
 						File f;
 						Path path = Paths.get(finalFileName);
-						if (path.isAbsolute() && WCCustomProperties.WRITE_PART_FILENAME_AS_ABSOLUTE) { // PH62271
+						if (path.isAbsolute() && WCCustomProperties.ALLOW_ABSOLUTE_FILENAME_FOR_WRITE) { // PH62271
                             f = new File(finalFileName);
 							if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
 								logger.logp(Level.FINE, CLASS_NAME, "write",
@@ -278,7 +278,7 @@ public class SRTServletRequestPart implements Part {
 		} else {
 			File f;
 			Path path = Paths.get(fileName);
-			if (path.isAbsolute() && WCCustomProperties.WRITE_PART_FILENAME_AS_ABSOLUTE) { // PH62271
+			if (path.isAbsolute() && WCCustomProperties.ALLOW_ABSOLUTE_FILENAME_FOR_WRITE) { // PH62271
                 f = new File(fileName);
 				if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
 					logger.logp(Level.FINE, CLASS_NAME, "write", "location [" + f + "] isAbsolute");

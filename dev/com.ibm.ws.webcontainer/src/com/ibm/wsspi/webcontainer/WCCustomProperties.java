@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2023 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -340,8 +340,8 @@ public class WCCustomProperties {
     //23.0.0.9 This is an old property which was not exposed in this class; moving it here
     public static boolean SET_400_SC_ON_TOO_MANY_PARENT_DIRS; 
 
-    //24.0.0.8 -- jakarta.servlet.http.Part#write( filename ) -- treat filename as abolsute (when specified)
-    public static boolean WRITE_PART_FILENAME_AS_ABSOLUTE; // PH62271
+    //24.0.0.8 -- jakarta.servlet.http.Part#write( filename ) -- treat filename as absolute (when specified)
+    public static boolean ALLOW_ABSOLUTE_FILENAME_FOR_WRITE; // PH62271
 
     static {
         setCustomPropertyVariables(); //initializes all the variables
@@ -441,7 +441,7 @@ public class WCCustomProperties {
         WCCustomProperties.FullyQualifiedPropertiesMap.put("maxfilecount", "com.ibm.ws.webcontainer.maxfilecount");
         WCCustomProperties.FullyQualifiedPropertiesMap.put("donotcloseoutputonforwardforservleterror", "com.ibm.ws.webcontainer.donotcloseoutputonforwardforservleterror");
         WCCustomProperties.FullyQualifiedPropertiesMap.put("set400scontoomanyparentdirs", "com.ibm.ws.webcontainer.set400scontoomanyparentdirs");
-        WCCustomProperties.FullyQualifiedPropertiesMap.put("writepartfilenameasabsolute", "com.ibm.ws.webcontainer.writepartfilenameasabsolute");
+        WCCustomProperties.FullyQualifiedPropertiesMap.put("allowAbsoluteFileNameForPartWrite", "com.ibm.ws.webcontainer.allowAbsoluteFileNameForPartWrite");
     }
 
     //some properties require "com.ibm.ws.webcontainer." on the front
@@ -840,10 +840,9 @@ public class WCCustomProperties {
         //23.0.0.9
         SET_400_SC_ON_TOO_MANY_PARENT_DIRS = (Boolean.valueOf(customProps.getProperty("com.ibm.ws.webcontainer.set400scontoomanyparentdirs"))).booleanValue();
 
-        //24.0.0.8
-        WRITE_PART_FILENAME_AS_ABSOLUTE = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.writepartfilenameasabsolute", IS_SERVLET_61_OR_HIGHER ? "true" :"false")).booleanValue();
+        //24.0.0.8 -- true for servlet 6.1+ and false for 6.0 and lower
+        ALLOW_ABSOLUTE_FILENAME_FOR_WRITE = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.allowAbsoluteFileNameForPartWrite", IS_SERVLET_61_OR_HIGHER ? "true" :"false")).booleanValue();
         
-        System.out.println("Prop: WRITE_PART_FILENAME_AS_ABSOLUTE " + WRITE_PART_FILENAME_AS_ABSOLUTE);
         //Default for Servlet 5.0 +
         if(com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() >= com.ibm.ws.webcontainer.osgi.WebContainer.SPEC_LEVEL_50) {
 
