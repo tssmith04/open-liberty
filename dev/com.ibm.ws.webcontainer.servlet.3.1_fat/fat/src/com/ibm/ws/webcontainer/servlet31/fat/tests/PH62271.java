@@ -84,8 +84,39 @@ public class PH62271Test {
         }
     }
 
+    // Mainly copied over from JSPServerHttpUnit#testFileUpload_test_getSubmittedFileName
     @Test
     public void testPH62271 () throws Exception {
+        LOG.info("\n /******************************************************************************/");
+        LOG.info("\n [WebContainer | Part#write]: Testing Part.write");
+        LOG.info("\n /******************************************************************************/");
+        WebConversation wc = new WebConversation();
+        String contextRoot = "/PH62271";
+        wc.setExceptionsThrownOnErrorStatus(false);
+        WebRequest request = new PostMethodWebRequest("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + contextRoot + "/index.jsp");
 
+        // Get test file
+        InputStream in = this.getClass().getResourceAsStream("/com/ibm/ws/fat/resources/myTempFile.txt");
+        LOG.info(in == null ? "/com/ibm/ws/fat/resources/myTempFile.txt in is null" : "/com/ibm/ws/fat/resources/myTempFile.txt in is not null");
+
+        UploadFileSpec file = new UploadFileSpec("myFileUploadFile.txt", in, "ISO-8859-1");
+        request.setParameter("files", new UploadFileSpec[] { file });
+
+        WebResponse response = wc.getResponse(request);
+        int code = response.getResponseCode();
+
+        LOG.info("/*************************************************/");
+        LOG.info("[WebContainer | Part#write]: Return Code is: " + code);
+        LOG.info("[WebContainer | Part#write]: Response is: ");
+        LOG.info(response.getText());
+        LOG.info("/*************************************************/");
+
+        assertTrue("Did not get 200 response code, got " + code + " response code instead.", code==200);
+
+        String search_msg = null;
+
+        // Ideally set search_msg to some sort of absolute/temporary file output based on part.write in the servlet
+        search_msg = "";
+        assertTrue("Did not find the search string in response. The search string is: " + search_msg, response.getText().indexOf(search_msg) != -1);
     }
 }
