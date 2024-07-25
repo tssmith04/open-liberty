@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.webcontainer.servlet_31_fat.PH62271.jar.servlets;
+package com.ibm.ws.webcontainer.servlet_31_fat.PH62271;
 
 import java.io.BufferedReader;
 import java.io.IOException;

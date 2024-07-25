@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.webcontainer.servlet31.fat.FATSuite;
 import com.meterware.httpunit.PostMethodWebRequest;
 import com.meterware.httpunit.UploadFileSpec;
@@ -34,6 +35,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -58,12 +60,8 @@ public class PH62271Test {
 
     @BeforeClass
     public static void setup() throws Exception {
-        // Build the jars to add to the war app as a lib
-        JavaArchive PH62271Jar = ShrinkHelper.buildJavaArchive(PH62271_JAR_NAME + ".jar",
-                                                                     "com.ibm.ws.webcontainer.servlet_31_fat.PH62271.jar.servlets");
         // Build the war app and add the dependencies
-        WebArchive PH62271App = ShrinkHelper.buildDefaultApp(PH62271_APP_NAME + ".war");
-        PH62271App = PH62271App.addAsLibraries(PH62271Jar);
+        WebArchive PH62271App = ShrinkHelper.buildDefaultApp(PH62271_APP_NAME + ".war", "com.ibm.ws.webcontainer.servlet_31_fat.PH62271");
 
         // Export the application.
         ShrinkHelper.exportDropinAppToServer(server, PH62271App);
@@ -82,6 +80,16 @@ public class PH62271Test {
     // Mainly copied over from JSPServerHttpUnit#testFileUpload_test_getSubmittedFileName
     @Test
     public void testPH62271 () throws Exception {
+
+        if (JakartaEEAction.isEE11OrLaterActive()){
+            ServerConfiguration config = server.getServerConfiguration();
+            // Set to null for servlet 6.1 and higher to test default behavior
+            config.getWebContainer().setAllowAbsoluteFileNameForPartWrite(null);
+            server.setMarkToEndOfLog();
+            server.updateServerConfiguration(config);
+            server.waitForConfigUpdateInLogUsingMark(null);
+        }
+
         LOG.info("\n /******************************************************************************/");
         LOG.info("\n [WebContainer | Part#write]: Testing Part.write");
         LOG.info("\n /******************************************************************************/");
