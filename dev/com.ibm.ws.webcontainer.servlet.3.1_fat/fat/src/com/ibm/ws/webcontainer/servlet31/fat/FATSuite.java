@@ -30,6 +30,7 @@ import com.ibm.ws.webcontainer.servlet31.fat.tests.CDITests;
 import com.ibm.ws.webcontainer.servlet31.fat.tests.CDIUpgradeHandlerTest;
 import com.ibm.ws.webcontainer.servlet31.fat.tests.HttpSessionAttListenerHttpUnit;
 import com.ibm.ws.webcontainer.servlet31.fat.tests.JSPServerHttpUnit;
+import com.ibm.ws.webcontainer.servlet31.fat.tests.PH62271Test;
 import com.ibm.ws.webcontainer.servlet31.fat.tests.PrivateHeaderTest;
 import com.ibm.ws.webcontainer.servlet31.fat.tests.VHServerHttpUnit;
 import com.ibm.ws.webcontainer.servlet31.fat.tests.WCServerHttpUnit;
@@ -61,7 +62,8 @@ import componenttest.topology.impl.LibertyServer;
                 CDIServletFilterListenerDynamicTest.class,
                 CDIServletFilterListenerTest.class,
                 WCServletContextUnsupportedOperationExceptionTest.class,
-                PrivateHeaderTest.class
+                PrivateHeaderTest.class,
+                PH62271Test.class
 })
 public class FATSuite {
 

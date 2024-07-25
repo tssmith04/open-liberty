@@ -29,6 +29,7 @@ File size need to be less than maxfilesize=50000
 <form action="/PH62271/PH62271Servlet" enctype="multipart/form-data" method="POST" >
  
 <P>UploadFile Name<p> <input TYPE="file" size="55" NAME="files"><BR></P>
+<input TYPE="text" NAME="location" value=''>
 <input TYPE="SUBMIT" name="SubmitButton" value="Submit">
 
 

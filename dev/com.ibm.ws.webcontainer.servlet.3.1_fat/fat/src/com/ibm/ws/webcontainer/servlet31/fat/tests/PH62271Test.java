@@ -12,6 +12,7 @@ package com.ibm.ws.webcontainer.servlet31.fat.tests;
 import static org.junit.Assert.assertTrue;
 
 import java.util.logging.Logger;
+import java.io.InputStream;
 
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -47,13 +48,10 @@ public class PH62271Test {
 
     private static final Logger LOG = Logger.getLogger(PH62271Test.class.getName());
 
-    @Rule
-    public TestName name = new TestName();
-
     private static final String PH62271_JAR_NAME = "PH62271";
     private static final String PH62271_APP_NAME = "PH62271";
 
-    protected static final Class<?> c = PH62271.class;
+    protected static final Class<?> c = PH62271Test.class;
 
     @Server("servlet31_PH62271")
     public static LibertyServer server;
@@ -62,13 +60,10 @@ public class PH62271Test {
     public static void setup() throws Exception {
         // Build the jars to add to the war app as a lib
         JavaArchive PH62271Jar = ShrinkHelper.buildJavaArchive(PH62271_JAR_NAME + ".jar",
-                                                                     "com.ibm.ws.webcontainer.servlet_31_fat.testservlet31.jar.servlets");
+                                                                     "com.ibm.ws.webcontainer.servlet_31_fat.PH62271.jar.servlets");
         // Build the war app and add the dependencies
-        WebArchive PH62271App = ShrinkHelper.buildDefaultApp(PH62271_APP_NAME + ".war",
-                                                                   "com.ibm.ws.webcontainer.servlet_31_fat.testservlet31.war.servlets",
-                                                                   "com.ibm.ws.webcontainer.servlet_31_fat.testservlet31.war.listeners");
-        PH62271App = (WebArchive) ShrinkHelper.addDirectory(PH62271App, "test-applications/TestServlet31.war/resources");
-        PH62271App = TestServlet31App.addAsLibraries(PH62271Jar);
+        WebArchive PH62271App = ShrinkHelper.buildDefaultApp(PH62271_APP_NAME + ".war");
+        PH62271App = PH62271App.addAsLibraries(PH62271Jar);
 
         // Export the application.
         ShrinkHelper.exportDropinAppToServer(server, PH62271App);
@@ -95,14 +90,21 @@ public class PH62271Test {
         wc.setExceptionsThrownOnErrorStatus(false);
         WebRequest request = new PostMethodWebRequest("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + contextRoot + "/index.jsp");
 
+        WebResponse response = wc.getResponse(request);
+        LOG.info(response.getText());
+
+        WebForm loginForm = response.getForms()[0];
+        request = loginForm.getRequest();
+
         // Get test file
         InputStream in = this.getClass().getResourceAsStream("/com/ibm/ws/fat/resources/myTempFile.txt");
         LOG.info(in == null ? "/com/ibm/ws/fat/resources/myTempFile.txt in is null" : "/com/ibm/ws/fat/resources/myTempFile.txt in is not null");
 
         UploadFileSpec file = new UploadFileSpec("myFileUploadFile.txt", in, "ISO-8859-1");
         request.setParameter("files", new UploadFileSpec[] { file });
+        request.setParameter("location", server.getServerRoot());
 
-        WebResponse response = wc.getResponse(request);
+        response = wc.getResponse(request);
         int code = response.getResponseCode();
 
         LOG.info("/*************************************************/");
