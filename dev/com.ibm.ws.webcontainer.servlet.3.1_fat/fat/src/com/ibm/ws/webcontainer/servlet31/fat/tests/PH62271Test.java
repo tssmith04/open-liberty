@@ -13,6 +13,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.logging.Logger;
 import java.io.InputStream;
+import java.io.File;
 
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -77,7 +78,10 @@ public class PH62271Test {
         }
     }
 
-    // Mainly copied over from JSPServerHttpUnit#testFileUpload_test_getSubmittedFileName
+    /*
+     * Mainly copied over from JSPServerHttpUnit#testFileUpload_test_getSubmittedFileName
+     * Tests that the allowAbsoluteFileNameForPartWrite in the server.xml works correctly
+     */ 
     @Test
     public void testPH62271 () throws Exception {
 
@@ -104,11 +108,14 @@ public class PH62271Test {
         WebForm loginForm = response.getForms()[0];
         request = loginForm.getRequest();
 
-        // Get test file
-        InputStream in = this.getClass().getResourceAsStream("/com/ibm/ws/fat/resources/myTempFile.txt");
-        LOG.info(in == null ? "/com/ibm/ws/fat/resources/myTempFile.txt in is null" : "/com/ibm/ws/fat/resources/myTempFile.txt in is not null");
+        String fileName = "myTempFile.txt";
 
-        UploadFileSpec file = new UploadFileSpec("myFileUploadFile.txt", in, "ISO-8859-1");
+        // Get test file
+        InputStream in = this.getClass().getResourceAsStream("/com/ibm/ws/fat/resources/" + fileName);
+        LOG.info(in == null ? "/com/ibm/ws/fat/resources/" + fileName + " in is null" : "/com/ibm/ws/fat/resources/" + fileName + " in is not null");
+
+        String uploadFileName = "myFileUploadFile.txt";
+        UploadFileSpec file = new UploadFileSpec(uploadFileName, in, "ISO-8859-1");
         request.setParameter("files", new UploadFileSpec[] { file });
         request.setParameter("location", server.getServerRoot());
 
@@ -123,10 +130,7 @@ public class PH62271Test {
 
         assertTrue("Did not get 200 response code, got " + code + " response code instead.", code==200);
 
-        String search_msg = null;
-
-        // Ideally set search_msg to some sort of absolute/temporary file output based on part.write in the servlet
-        search_msg = "";
-        assertTrue("Did not find the search string in response. The search string is: " + search_msg, response.getText().indexOf(search_msg) != -1);
+        File uploadedFile = new File(server.getServerRoot() + "/uploads/" + uploadFileName);
+        assertTrue("Did not find the uploaded file at its absolute path location. The absolute path is: " + server.getServerRoot() + "/uploads/" + uploadFileName, uploadedFile.isFile());
     }
 }

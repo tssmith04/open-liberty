@@ -69,47 +69,6 @@ public class PH62271Servlet extends HttpServlet {
             sos1.println(ss);
             sos1.println(" ");
 
-            // // Can be shortened eventually, but may be good for debugging at first
-            // if (part != null) {
-            //     ss = "Part        = " + part;
-            //     sos1.println(ss);
-            //     ss = "Content 	= " + part.getContentType();
-            //     sos1.println(ss);
-            //     ss = "Header  	= " + part.getHeader("files");
-            //     sos1.println(ss);
-            //     ss = "HeaderNames = " + part.getHeaderNames();
-            //     sos1.println(ss);
-
-            //     Collection<String> headercollection = part.getHeaderNames();
-            //     for (Iterator<String> It = headercollection.iterator(); It.hasNext();) {
-
-            //         String header = It.next();
-            //         ss = "Header  	= " + part.getHeader(header);
-            //         sos1.println(ss);
-            //         ss = "Headers  	= " + part.getHeaders(header);
-            //         sos1.println(ss);
-            //     }
-
-            //     ss = "InputStream = " + part.getInputStream();
-            //     sos1.println(ss);
-            //     ss = "Name        = " + part.getName();
-            //     sos1.println(ss);
-            //     ss = "Size        = " + part.getSize();
-            //     sos1.println(ss);
-            //     ss = "FileName    = " + part.getSubmittedFileName();
-            //     sos1.println(ss);
-
-            //     sos1.println(" ");
-            //     ss = "--------  Printing File Content --------";
-            //     sos1.println(ss);
-
-            //     BufferedReader in = new BufferedReader(new InputStreamReader(part.getInputStream()));
-            //     String line = null;
-
-            //     while ((line = in.readLine()) != null) {
-            //         sos1.println(line);
-            //     }
-
             if (part != null){
                 String path = request.getParameterMap().get("location")[0];
                 sos1.println("Server Path: " + path);
